@@ -1,0 +1,896 @@
+define abs(x){if(x<0){return -x;}else{return x;}}
+define rad(x){return (x/180*(a(1)*4));}
+define sqr(x){return sqrt(x);}
+
+define theta1(z,q){
+# Lawden 1.2.11
+  auto r,t,n,s,p;
+  r=sqr(sqr(q));
+  t=0;n=0;s=1;
+  p=1;
+  while(p>0){
+    p=q^(n*(n+1));
+    t=t+s*p*s((2*n+1)*z);
+    n=n+1;
+    s=-s; 
+  }                    
+  return 2*r*t;
+}
+
+define theta3(z,q){
+# Lawden 1.2.13
+  auto t,p,n;
+  t=0;n=1;
+  p=1;
+  while(p>0){
+    p=q^(n^2);
+    t=t+p*c(2*n*z);
+    n=n+1;
+  }
+  return 1+(2*t);
+}
+
+define theta2(z,q){return theta1(a(1)*2-z,q);}
+define theta4(z,q){return theta3(a(1)*2-z,q);}
+define theta1deg(x,q){return theta1(rad(x),q);}
+define theta2deg(x,q){return theta2(rad(x),q);}
+define theta3deg(x,q){return theta3(rad(x),q);}
+define theta4deg(x,q){return theta4(rad(x),q);}
+
+define theta1_dz(z,q){
+# Taking derivative of 1.2.11 -- also recommended by DLMF 20.2(i)
+  auto r,t,n,s,p;
+  r=sqr(sqr(q));
+  t=0;n=0;s=1;
+  p=1;
+  while(p>0){
+    p=q^(n*(n+1));
+    t=t+(2*n+1)*s*p*c((2*n+1)*z);
+    n=n+1;
+    s=-s; 
+  }
+  return 2*r*t;
+}
+
+define theta1_dz2(z,q){
+# Taking second derivative of 1.2.11 -- also recommended by DLMF 20.2(i)
+  auto r,t,n,s,p;
+  r=sqr(sqr(q));
+  t=0;n=0;s=1;
+  p=1;
+  while(p>0){
+    p=q^(n*(n+1));
+    t=t-(2*n+1)^2*s*p*s((2*n+1)*z);
+    n=n+1;
+    s=-s; 
+  }
+  return 2*r*t;
+}
+define theta2_dz(z,q){return -theta1_dz(z-a(1)*2,q);}
+define theta2_dz2(z,q){return -theta1_dz2(z-a(1)*2,q);}
+
+define theta1_dz3(z,q){
+# Taking third derivative of 1.2.11 -- also recommended by DLMF 20.2(i)
+  auto r,t,n,s,p;
+  r=sqr(sqr(q));
+  t=0;n=0;s=1;
+  p=1;
+  while(p>0){
+    p=q^(n*(n+1));
+    t=t-(2*n+1)^3*s*p*c((2*n+1)*z);
+    n=n+1;
+    s=-s; 
+  }
+  return 2*r*t;  
+}
+
+define theta3_dz(z,q){
+# Taking derivative of 1.2.13 -- also recommended by DLMF 20.2(i)
+  auto t,p,n;
+  t=0;n=1;
+  p=1;
+  while(p>0){
+    p=q^(n^2);
+    t=t-2*n*p*s(2*n*z);
+    n=n+1;
+  }
+  return (2*t);
+}
+
+define theta4_dz(z,q){return theta3_dz(z-a(1)*2,q);}
+
+define theta3_dz2(z,q){
+# Taking second derivative of 1.2.13 -- also recommended by DLMF 20.2(i)
+  auto t,p,n;
+  t=0;n=1;
+  p=1;
+  while(p>0){
+    p=q^(n^2);
+    t=t-4*(n^2)*p*c(2*n*z);
+    n=n+1;
+  }
+  return (2*t);
+}
+define theta4_dz2(z,q){return theta3_dz2(z-a(1)*2,q);}
+
+# This is Table A
+/*
+print "Function Theta 1\n"
+for(q=.1;q<=0.81;q=q+0.1){
+  print "q=",q,"\nx deg\tTheta 1\tTheta 3\n"
+  for(x=0;x<=90;x=x+1){
+    print x,"\t",theta1deg(x,q),"\t",theta3deg(x,q),"\n";
+  }
+  print "\n"
+}
+print "Function Theta 2\n"
+for(q=.1;q<=0.81;q=q+0.1){
+  print "q=",q,"\nx deg\tTheta 2\tTheta 4\n"
+  for(x=0;x<=90;x=x+1){
+    print x,"\t",theta2deg(x,q),"\t",theta4deg(x,q),"\n";
+  }
+  print "\n"
+}
+*/
+
+# A better implementatin of this may be needed in the future
+define k2q(k){
+  auto kt,lo,hi,mid;
+  /* Solving k = (theta2(0,q)/theta3(0,q))^2 */
+  /* Via bisection method */
+  lo=0.0; hi=1.0;mid=(lo+hi)/2;
+  while(((hi-mid)*(mid-lo)) >0){
+    kt= (theta2(0,mid)/theta3(0,mid))^2;
+    if(k>kt){lo=mid;}else{hi=mid;}
+    mid=(lo+hi)/2;
+  }
+  return mid;
+}
+
+define sn(u,k){
+  auto z,q;
+  q=k2q(k);
+  z=u/(theta3(0,q)^2);
+  return (theta3(0,q)*theta1(z,q))/(theta2(0,q)*theta4(z,q));
+}
+
+define cn(u,k){
+  auto z,q;
+  q=k2q(k);
+  z=u/(theta3(0,q)^2);
+  return (theta4(0,q)*theta2(z,q))/(theta2(0,q)*theta4(z,q));
+}
+
+define dn(u,k){
+  auto z,q;
+  q=k2q(k);
+  z=u/(theta3(0,q)^2);
+  return (theta4(0,q)*theta3(z,q))/(theta3(0,q)*theta4(z,q));
+}
+
+define smallk2bigk(k){
+# Lawden 2.2.3
+  return a(1)*2*(theta3(0,k2q(k))^2);
+}
+
+define smallk2bige(k){
+  auto q;
+# Lawden 3.5.5
+  q=k2q(k);
+  return smallk2bigk(k)*(1- (theta4_dz2(0,q))/(theta4(0,q)*(theta3(0,q))^4));
+}
+
+# Lawden book Table E uses k
+# Mathematica JacobiEpsilon uses m=k^2
+# Lawden's q (the nome) relates to k via k=(theta_2(0,k)/theta_3(0,k))^2
+define jacobi_epsilon(u,k){
+  auto x,q;
+  q=k2q(k);
+  x=u/(theta3(0,q)^2);
+  return (1/theta3(0,q))^2 * (theta4_dz(x,q)/theta4(x,q)) + (1- (theta4_dz2(0,q))/(theta4(0,q)*(theta3(0,q))^4))*u;
+}
+
+define jacobi_zeta(u,k){
+  auto x,q;
+  q=k2q(k);
+  x=u/(theta3(0,q)^2);
+  return (1/theta3(0,q))^2 * (theta4_dz(x,q)/theta4(x,q));
+}
+
+# This is an incomplete Table B
+/*
+for(ksq=0.0;ksq<=0.99;ksq=ksq+0.01){
+  print ksq,"\t",k2q(sqrt(ksq)),"\t",smallk2bigk(sqrt(ksq)),"\t",smallk2bige(sqrt(ksq)),"\t",1-ksq,"\n"
+}
+*/
+
+# This is Table C
+/*
+for(k=0.1;k<=0.9;k=k+0.1){
+  maxx = smallk2bigk(k);
+  print "[k=",k,"; K=",maxx,"]\n"
+  for(x=0.0;x<maxx;x=x+0.1){
+    print x,":",sn(x,k),"\t",cn(x,k),"\t",dn(x,k),"\n";
+  }
+}
+*/
+
+/* sn^-1(sin phi,k) */
+define tabled1_1stkind_deg(phi,k){
+  auto target,snt,lo,hi,mid;
+  /* Solving sn^-1(sin phi,k) via bisection method */
+  target=s(phi/180*(a(1)*4));
+  lo=0.0; hi=smallk2bigk(k); mid=(lo+hi)/2;
+  while(((hi-mid)*(mid-lo)) >0){
+    snt=sn(mid,k);
+    if(snt<target){lo=mid;}else{hi=mid;}
+    mid=(lo+hi)/2;
+  }
+  return mid;
+}
+
+define tabled2_integral_e(u,k){
+  auto x,q;
+  q=k2q(k);
+  x=u/theta3(0,q)^2;
+  return (theta4_dz(x,q)/(theta3(0,q)^2*theta4(x,q)))+u*(1-theta4_dz2(0,q)/(theta3(0,q)^4*theta4(0,q)));
+}
+
+# Table D is Legendre's Incomplete integrals of 1st and 2nd kind
+# This is Table D1 -- First Kind, F(phi, k)
+/*
+oscale=scale;
+scale=15; # When scale=10 fails to match every digits at big k and phi
+for(phi=0;phi<=90;phi=phi+1){
+  print phi,":";
+  for(k=0.1;k<=0.9;k=k+0.1){
+    print tabled1_1stkind_deg(phi,k)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+*/
+
+# This is Table D2 -- Second Kind, D(phi, k)
+/*
+oscale=scale;
+scale=15; # When scale=10 fails to match every digits at big k and phi
+for(phi=0;phi<=90;phi=phi+1){
+  print phi,":";
+  for(k=0.1;k<=0.9;k=k+0.1){
+    print tabled2_integral_e(tabled1_1stkind_deg(phi,k),k)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+*/
+
+# This is Table E
+/*
+for(k=0.1;k<=0.9;k=k+0.1){
+  maxz = smallk2bigk(k);
+  print "[k=",k,"; K=",maxz,"]\n"
+  for(z=0.1;z<maxz;z=z+0.1){
+    print z,":",jacobi_zeta(z,k),"\t",jacobi_epsilon(z,k),"\n";
+  }
+}
+*/
+
+# Table F is sigma function (sigma, sigma_1, sigma_2, sigma_3)
+define tablef1_function(uow1,kappa){
+# Lawden P.152: omega_1^{-1} sigma(u,omega_1,omega_3) = sigma(u/omega,1,tau)
+  auto pi,q;
+  pi=a(1)*4;
+  #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
+  q=1/e(pi*kappa); 
+  return 2/(pi*theta1_dz(0,q)) / e(pi^2/24 * (theta1_dz3(0,q)/theta1_dz(0,q)) * uow1^2) * theta1(pi*uow1/2,q);
+}
+
+define sigma1_function(uow1,kappa){
+# Lawden 6.2.19 + P.152: sigma1(u,omega1,i kappa omega_1)=sigma1(u/omega1,1,tau)
+  auto pi,q,z;
+  pi=a(1)*4;
+  #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
+  q=1/e(pi*kappa); 
+  z=pi/2*uow1;
+  return (theta2(z,q)/theta2(0,q))/e(pi^2/24 * (theta1_dz3(0,q)/theta1_dz(0,q)) * uow1^2);
+}
+
+define sigma2_function(uow1,kappa){
+# Lawden 6.2.19 + P.152: sigma2(u,omega1,i kappa omega_1)=sigma2(u/omega1,1,tau)
+  auto pi,q,z;
+  pi=a(1)*4;
+  #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
+  q=1/e(pi*kappa); 
+  z=pi/2*uow1;
+  return (theta3(z,q)/theta3(0,q))/e(pi^2/24 * (theta1_dz3(0,q)/theta1_dz(0,q)) * uow1^2);
+}
+
+define sigma3_function(uow1,kappa){
+# Lawden 6.2.19 + P.152: sigma3(u,omega1,i kappa omega_1)=sigma3(u/omega1,1,tau)
+  auto pi,q,z;
+  pi=a(1)*4;
+  #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
+  q=1/e(pi*kappa); 
+  z=pi/2*uow1;
+  return (theta4(z,q)/theta4(0,q))/e(pi^2/24 * (theta1_dz3(0,q)/theta1_dz(0,q)) * uow1^2);
+}
+
+/*
+oscale=scale;
+# This is Table F1
+scale=10;
+for(uow1=0.0;uow1<=2.0;uow1=uow1+0.1){
+  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
+    print tablef1_function(uow1,kappa)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+print "=====\n"
+
+oscale=scale;
+# Table F2
+scale=10;
+for(uow1=0.0;uow1<=2.0;uow1=uow1+0.1){
+  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
+    print sigma1_function(uow1,kappa)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+print "=====\n"
+
+oscale=scale;
+# Table F3
+scale=10;
+for(uow1=0.0;uow1<=2.0;uow1=uow1+0.1){
+  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
+    print sigma2_function(uow1,kappa)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+print "=====\n"
+
+oscale=scale;
+# Table F4
+scale=10;
+for(uow1=0.0;uow1<=2.0;uow1=uow1+0.1){
+  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
+    print sigma3_function(uow1,kappa)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+print "=====\n"
+*/
+
+# Table G is Weierstrass's Zeta fucntion
+define tablef1_function_duow1(uow1,kappa){
+# Lawden P.152: omega_1^{-1} sigma(u,omega_1,omega_3) = sigma(u/omega,1,tau)
+  auto pi,q,r1,ans;
+  pi=a(1)*4;
+  #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
+  q=1/e(pi*kappa); 
+  # Before differentiation, it is: 2/(pi*theta1_dz(0,q)) / e(pi^2/24 * (theta1_dz3(0,q)/theta1_dz(0,q)) * uow1^2) * theta1(pi*uow1/2,q);
+  r1=theta1_dz3(0,q)/theta1_dz(0,q);
+  ans = theta1_dz(pi*uow1/2,q) - (pi/6 * r1 * uow1) * theta1(pi*uow1/2,q);
+  ans = ans/(theta1_dz(0,q) * e(pi^2/24 * r1 * uow1^2));
+  return ans;
+}
+
+define tableg_function(uow1,kappa){
+  auto ans,ooscale,oscale,adddigits,flag;
+  # Taking some measure to increase scale preventing loss of precision due to tablef1_function close to zero
+  flag=0;
+  ooscale=scale;
+  while(flag==0){
+    adddigits=l(abs(tablef1_function(uow1,kappa)))/l(10);
+    oscale=scale;
+    if(adddigits<0){ # Need to add digits
+      if(adddigits>-2*oscale){ # adddigits unable to correctly reflect the number of digits needed
+        scale = 0;
+        scale = ooscale-2*adddigits/1+1;
+        if(oscale==scale){
+          flag = 1; # Converged
+        }else{
+          flag = 0; # Not converge, compute once more
+        }
+      }else{ # So try to recompute adddigits with higher precision
+        oscale = oscale + 5;
+        scale = oscale;
+        flag = 0;
+      }
+    }else{ # No need to add digits
+      scale = oscale;
+      flag = 1;
+    }
+  }
+  ans = (tablef1_function_duow1(uow1,kappa)/tablef1_function(uow1,kappa));
+  scale = ooscale;
+  return ans;
+
+}
+
+/*
+oscale=scale;
+# This is Table G
+scale=10; # At scale = 10 some division by zero occured; at scale = 15 it fails to match to 4d.p.
+for(uow1=0.1;uow1<=1.9;uow1=uow1+0.1){
+  print "uow1=",uow1,":";
+  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
+    print tableg_function(uow1,kappa)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+print "=====\n"
+*/
+
+# Table H, I, J are Weierstrass's P function
+define tableh1_p(uow1,kappa){
+# Done with Lawden (6.7.28) but somehow not correct
+  auto pi,q,z;
+  pi=a(1)*4;
+  #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
+  q=1/e(pi*kappa);
+  z=uow1*pi/2;
+  return (pi/2)^2*(theta1_dz3(0,q)/(3*theta1_dz(0,q)) - (theta1(z,q)*theta1_dz2(z,q)-theta1_dz(z,q)^2)/(theta1(z,q)^2));
+}
+
+# Need one more time of differentiation
+define tablef1_function_duow2(uow1,kappa){
+# Lawden P.152: omega_1^{-1} sigma(u,omega_1,omega_3) = sigma(u/omega,1,tau)
+  auto pi,q,r1,t0,t1,t2,ans;
+  pi=a(1)*4;
+  #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
+  q=1/e(pi*kappa); 
+  # Before differentiation, it is:
+  # ans = (1/theta1_dz(0,q)) * (theta1_dz(pi*uow1/2,q) - (pi/6 * r1 * uow1) * theta1(pi*uow1/2,q)) * e(-(pi^2/24 * r1 * uow1^2));
+  # Before simplification, it is:
+  # ans = (pi/2) * theta1_dz2(pi*uow1/2,q) - (pi/6 * r1) * theta1(pi*uow1/2,q) - (pi^2/12 * r1 * uow1) * theta1_dz(pi*uow1/2,q);
+  # ans = ans * e(-(pi^2/24 * r1 * uow1^2));
+  # ans = ans - (theta1_dz(pi*uow1/2,q) - (pi/6 * r1 * uow1) * theta1(pi*uow1/2,q)) * (pi^2/12 * r1 * uow1) * e(-(pi^2/24 * r1 * uow1^2));
+  # ans = ans/theta1_dz(0,q);
+  r1=theta1_dz3(0,q)/theta1_dz(0,q);
+  t0=theta1(pi*uow1/2,q);
+  t1=theta1_dz(pi*uow1/2,q);
+  t2=theta1_dz2(pi*uow1/2,q);
+  ans = t2 - (pi/3 * r1 * uow1) * t1 + (pi^2/36 * r1^2 * uow1^2 - r1/3) * t0;
+  ans = pi*ans*e(-(pi^2/24 * r1 * uow1^2))/(2*theta1_dz(0,q));
+  return ans;
+}
+
+define tableg_function_duow1(uow1,kappa){
+  auto ans,ooscale,oscale,adddigits,flag;
+# Before differentiation it is tablef1_function_duow1(uow1,kappa)/tablef1_function(uow1,kappa);
+  # Taking some measure to increase scale preventing loss of precision due to tablef1_function close to zero
+  flag=0;
+  ooscale=scale;
+  while(flag==0){
+    adddigits=l(abs(tablef1_function(uow1,kappa)))/l(10);
+    oscale=scale;
+    if(adddigits<0){ # Need to add digits
+      if(adddigits>-2*oscale){ # adddigits unable to correctly reflect the number of digits needed
+        scale = 0;
+        scale = ooscale-2*adddigits/1+1;
+        if(oscale==scale){
+          flag = 1; # Converged
+        }else{
+          flag = 0; # Not converge, compute once more
+        }
+      }else{ # So try to recompute adddigits with higher precision
+        oscale = oscale + 5;
+        scale = oscale;
+        flag = 0;
+      }
+    }else{ # No need to add digits
+      scale = oscale;
+      flag = 1;
+    }
+  }
+  ans = tablef1_function_duow2(uow1,kappa)/(tablef1_function(uow1,kappa)) - (tablef1_function_duow1(uow1,kappa)/tablef1_function(uow1,kappa))^2;
+  scale = ooscale;
+  return ans;
+}
+
+# Try to compute using finite difference -- mostly correct
+define tableh_p(uow1,kappa){
+  return -tableg_function_duow1(uow1,kappa);
+}
+
+# This is Table H
+/*
+oscale=scale;
+scale=10;
+for(subpage=0;subpage<4;subpage=subpage+1){
+print "[PAGE ",subpage+1,"]\n"
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+for(kappa=0.1+subpage*0.5;kappa<0.1+(subpage+1)*0.5;kappa=kappa+0.1){
+  print tableh_p(uow1,kappa)," "
+}
+  print "\n"
+}
+print "-----\n"
+}
+print "=====\n"
+scale=oscale;
+*/
+
+# Table K is stationary and invariants of P
+define tablek1_e1w1square(kappa){
+# Done with Lawden (6.7.29)
+  auto pi,q,ans;
+  pi=a(1)*4;
+  #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
+  q=1/e(pi*kappa);
+  return (pi/2)^2*(theta1_dz3(0,q)/theta1_dz(0,q)/3 - theta2_dz2(0,q)/theta2(0,q));
+}
+define tablek1_e2w1square(kappa){
+# Done with Lawden (6.7.30)
+  auto pi,q,ans;
+  pi=a(1)*4;
+  #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
+  q=1/e(pi*kappa);
+  return (pi/2)^2*(theta1_dz3(0,q)/theta1_dz(0,q)/3 - theta3_dz2(0,q)/theta3(0,q));
+}
+define tablek1_e3w1square(kappa){
+  auto pi,q,ans;
+  pi=a(1)*4;
+  #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
+  q=1/e(pi*kappa);
+# Lawden Ch 6 Exe 4
+  return pi^2/12 * -(theta2(0,q)^4 + theta3(0,q)^4);
+}
+
+define tablek1_g2w1fourth(kappa){
+  auto pi,q,ans;
+  pi=a(1)*4;
+  #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
+  q=1/e(pi*kappa);
+# Lawden Ch 6 Exe 4
+  return pi^4/24 * (theta2(0,q)^8 + theta3(0,q)^8 + theta4(0,q)^8);
+}
+define tablek1_g3w1sixth(kappa){
+  auto pi,q,ans;
+  pi=a(1)*4;
+  #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
+  q=1/e(pi*kappa);
+# Lawden Ch 6 Exe 4
+  return pi^6/432 * (theta2(0,q)^4 + theta3(0,q)^4) * (theta3(0,q)^4 + theta4(0,q)^4) * (theta4(0,q)^4 - theta2(0,q)^4);
+}
+
+define tablei_p(uow1,kappa){
+  auto e1,e2,e3;
+  e1=tablek1_e1w1square(kappa);
+  e2=tablek1_e2w1square(kappa);
+  e3=tablek1_e3w1square(kappa);
+# Applying Lawden (6.8.13)
+  return e3 + ((e3-e1)*(e3-e2))/(tableh1_p(uow1,kappa)-e3);  
+}
+
+# This is Table I, after applying (6.8.13)
+/*
+oscale=scale;
+scale=10;
+for(subpage=0;subpage<4;subpage=subpage+1){
+print "[PAGE ",subpage+1,"]\n"
+for(uow1=0.00;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+for(kappa=0.1+subpage*0.5;kappa<0.1+(subpage+1)*0.5;kappa=kappa+0.1){
+  print tablei_p(uow1,kappa)," "
+}
+  print "\n"
+}
+print "-----\n"
+}
+print "=====\n"
+scale=oscale;
+*/
+
+# Table J if formally computed via theta will require complex number q
+# The work-around is Lawden Ch 6 Exe 22 which was also recommended by the book
+# Note how similar this function is when compared against theta
+define psi(z,nu){
+  auto oscale,t,n,s,p;
+  q=1/e(2*a(1)*nu);
+  t=0;n=0;
+  p=1;
+  while(p>0){
+    p=q^(n*(n+1));
+    oscale=scale;scale=0;
+    if(n*(n-1)%4 < 1.5){s=1;}else{s=-1;}
+    scale=oscale;
+    t=t+s*p*s((2*n+1)*z);
+    n=n+1;
+  }
+  return t;
+}
+
+define psi_dz(z,nu){
+  auto oscale,t,n,s,p;
+  q=1/e(2*a(1)*nu);
+  t=0;n=0;
+  p=1;
+  while(p>0){
+    p=q^(n*(n+1));
+    oscale=scale;scale=0;
+    if(n*(n-1)%4 < 1.5){s=1;}else{s=-1;}
+    scale=oscale;
+    t=t+s*p*(2*n+1)*c((2*n+1)*z);
+    n=n+1;
+  }
+  return t;
+}
+
+define psi_dz2(z,nu){
+  auto oscale,t,n,s,p;
+  q=1/e(2*a(1)*nu);
+  t=0;n=0;
+  p=1;
+  while(p>0){
+    p=q^(n*(n+1));
+    oscale=scale;scale=0;
+    if(n*(n-1)%4 < 1.5){s=1;}else{s=-1;}
+    scale=oscale;
+    t=t-s*p*(2*n+1)^2*s((2*n+1)*z);
+    n=n+1;
+  }
+  return t;
+}
+
+define psi_dz3(z,nu){
+  auto oscale,t,n,s,p;
+  q=1/e(2*a(1)*nu);
+  t=0;n=0;
+  p=1;
+  while(p>0){
+    p=q^(n*(n+1));
+    oscale=scale;scale=0;
+    if(n*(n-1)%4 < 1.5){s=1;}else{s=-1;}
+    scale=oscale;
+    t=t-s*p*(2*n+1)^3*c((2*n+1)*z);
+    n=n+1;
+  }
+  return t;
+}
+
+define tablej_p(uow1,nu){
+  auto pi,p0,p1,p2,z,ans;
+  pi=a(1)*4;
+  z=pi/2*uow1;
+  p0=psi(z,nu);
+  p1=psi_dz(z,nu);
+  p2=psi_dz2(z,nu);
+  ans = psi_dz3(0,nu)/(3*psi_dz(0,nu)) + (p1/p0)^2 - p2/p0;
+  return (pi/2)^2 * ans;
+}
+
+# Analytic Differentiation still needed
+define tablej_p_duow1(uow1,nu){
+  auto pi,ans;
+  pi=a(1)*4;
+  z=pi/2*uow1;
+# Before differentiation, it is:
+#  ans = psi_dz3(0,nu)/(3*psi_dz(0,nu)) + (psi_dz(z,nu))^2 (psi(z,nu))^-2 - (psi_dz2(z,nu)) (psi(z,nu))^-1;
+#  return (pi/2)^2 * ans;
+  ans = (pi/2)^3 * (-2*psi_dz(z,nu)^3/psi(z,nu)^3 + 3*psi_dz(z,nu)*psi_dz2(z,nu)/psi(z,nu)^2 - psi_dz3(z,nu)/psi(z,nu));
+  return ans;
+}
+
+/*
+# This is Table J
+oscale=scale;
+scale=10;
+for(subpage=0;subpage<4;subpage=subpage+1){
+print "[PAGE ",subpage+1,"]\n"
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+for(nu=0.2+subpage*1.0;nu<0.2+(subpage+1)*1.0;nu=nu+0.2){
+  print tablej_p(uow1,nu)," "
+}
+  print "\n"
+}
+print "-----\n"
+}
+print "=====\n"
+scale=oscale;
+*/
+
+define tablek1_bigg(kappa){
+# Lawden 6.16.2 -- G = g_2^3 / (27 g_3^2) -- (g2w1^4)^3 / (27 (g3w1^6)^2)
+  auto num,den;
+  num=tablek1_g2w1fourth(kappa)^3;
+  den=27*tablek1_g3w1sixth(kappa)^2;
+  if(den!=0){
+    return num/den;
+  }else{
+    if(num>0){print "+oo";}
+    if(num<0){print "-oo";}
+    if(num==0){print "NaN";}
+    return 0;
+  }
+}
+
+oscale=scale;
+scale=10
+# This is Table K1
+for(kappa=0.1;kappa<=2.0;kappa=kappa+0.1){
+  print kappa,":",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa)," ",tablek1_bigg(kappa),"\n"
+}
+scale=oscale;
+print "-----\n"
+
+# Time to work out Table K2
+define tablek2_e1w1square(nu){
+  return tablej_p(1.0,nu);
+}
+
+define tablek2_e2imagpart(nu){
+  auto e1,dph,ph,num,den;
+# Lawden: Try to use 6.7.26, but CANNOT use any multiples of w1 since numbers will vanishes
+# (P'(w1/2))^2 = 4 (P(w1/2) )^3 - g2 P(w1/2) - g3
+#              = ______________ + 4 (e1e2 + e1e3 + e2e3) P(w1/2) - 4 e1e2e3
+# We know e2, e3 = -e1/2 + bI
+#              = ______________ + 4 (-e1^2 + e1^2/4 + b^2) P(w1/2) - 4 e1 (e1^2/4 + b^2)
+#              = ______________ - 3 e1^2 P(w1/2) + 4 b^2 P(w1/2) - e1^3 - 4 e1 b^2
+#              = ______________ - (3 e1^2 P(w1/2) + e1^3) - 4 (e1 - P(w1/2)) b^2
+  e1=tablek2_e1w1square(nu);
+  dph=tablej_p_duow1(0.5,nu);
+  ph=tablej_p(0.5,nu);
+  num=dph^2-4*ph^3+3*e1^2*ph+e1^3;
+  den=-4*(e1-ph);
+  return sqrt(num/den);
+}
+
+# To compute this we seems have to allow complex-valued psi
+# Or some other formula...but that only asymptotically correct?
+define void tablek2_print_e2w1square(nu){
+# A very nice observation: Since g_1 = 0, Re(e_2) = -e_1/2; Then things could be deduced
+  print -tablej_p(1.0,nu)/2,"±"
+  print tablek2_e2imagpart(nu),"I";
+}
+
+define tablek2_g2w1fourth(nu){
+# Resort to use definition g2=-4(e1e2+e1e3+e2e3)=-4*(e1(-e1) + e1^2/4 + b^2)=3e1^2 - 4b^2
+  return 3*tablek2_e1w1square(nu)^2 - 4*tablek2_e2imagpart(nu)^2;
+}
+
+define tablek2_g3w1sixth(nu){
+# Resort to use definition g3=4 e1e2e3 =4 e1(e1^2/4 + b^2)=e1^3 + 4 e1 b^2
+  return tablek2_e1w1square(nu)^3 + 4*tablek2_e1w1square(nu)*tablek2_e2imagpart(nu)^2;
+}
+
+define tablek2_bigg(nu){
+# Lawden 6.16.2 -- G = g_2^3 / (27 g_3^2) -- (g2w1^4)^3 / (27 (g3w1^6)^2)
+  auto num,den;
+  num=tablek2_g2w1fourth(nu)^3;
+  den=27*tablek2_g3w1sixth(nu)^2;
+  if(den!=0){
+    return num/den;
+  }else{
+    if(num>0){print "+oo";}
+    if(num<0){print "-oo";}
+    if(num==0){print "NaN";}
+    return 0;
+  }
+}
+
+# This is Table K2
+oscale=scale;
+scale=20;
+for(nu=0.2;nu<=4.0;nu=nu+0.2){
+  print nu,":",tablek2_e1w1square(nu)," ";
+  tablek2_print_e2w1square(nu)
+  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu)," ",tablek2_bigg(nu),"\n"
+}
+scale=oscale;
+print "=====\n"
+
+# Table L are Weierstrass's P function
+# Computation of Table L in fact requires results of G from Table M, then should be functions of H, I and J
+
+# Table M has to be computed before Table L
+# A better implementatin of this may be needed in the future
+define bigg2nu_g3gt0(g){
+  auto gt,lo,hi,mid;
+  /* Solving G = tablek2_bigg(nu) for g3>0 */
+  /* Via bisection method */
+  lo=1.0; hi=10.0;mid=(lo+hi)/2;
+  while(((hi-mid)*(mid-lo)) >0){
+    gt=tablek2_bigg(mid);
+    if(g>gt){lo=mid;}else{hi=mid;}
+    mid=(lo+hi)/2;
+  }
+  return mid;  
+}
+define bigg2nu_g3lt0(g){
+  auto gt,lo,hi,mid;
+  /* Solving G = tablek2_bigg(nu) for g3<0 */
+  /* Via bisection method */
+  lo=0.0; hi=1.0;mid=(lo+hi)/2;
+  while(((hi-mid)*(mid-lo)) >0){
+    gt=tablek2_bigg(mid);
+    if(g<=gt){lo=mid;}else{hi=mid;}
+    mid=(lo+hi)/2;
+  }
+  return mid;  
+}
+define bigg2kappa_g3gt0(g){
+  auto gt,lo,hi,mid;
+  /* Solving G = tablek1_bigg(kappa) for g3>0*/
+  /* Via bisection method */
+  lo=1.0; hi=10.0;mid=(lo+hi)/2;
+  while(((hi-mid)*(mid-lo)) >0){
+    gt= tablek1_bigg(mid);
+    if(g<=gt){lo=mid;}else{hi=mid;}
+    mid=(lo+hi)/2;
+  }
+  return mid;
+}
+define bigg2kappa_g3lt0(g){
+  auto gt,lo,hi,mid;
+  /* Solving G = tablek1_bigg(kappa) for g3>0*/
+  /* Via bisection method */
+  lo=0.0; hi=1.0;mid=(lo+hi)/2;
+  while(((hi-mid)*(mid-lo)) >0){
+    gt= tablek1_bigg(mid);
+    if(g>gt){lo=mid;}else{hi=mid;}
+    mid=(lo+hi)/2;
+  }
+  return mid;
+}
+
+oscale=scale;
+scale=15; # scale = 10 fail to reproduce the number to 4d.p.
+# Table M1, g3>0
+for(g=-6.0;g<=-2.0;g=g+1.0){
+  nu = bigg2nu_g3gt0(g);
+  print g," ",nu," ",tablek2_e1w1square(nu)," "
+  tablek2_print_e2w1square(nu)
+  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"\n"
+}
+for(g=-1.8;g<1.0;g=g+0.2){
+  nu = bigg2nu_g3gt0(g);
+  print g," ",nu," ",tablek2_e1w1square(nu)," "
+  tablek2_print_e2w1square(nu)
+  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"\n"
+}
+print "1.0 +oo [";
+nu=10^2; # A pseudo-infinity
+print tablek2_e1w1square(nu)," "
+tablek2_print_e2w1square(nu)
+print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"]\n"
+for(g=1.2;g<=2.0;g=g+0.2){
+  kappa = bigg2kappa_g3gt0(g);
+  print g," ",kappa," ",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa),"\n"
+}
+for(g=3.0;g<=6.0;g=g+1.0){
+  kappa = bigg2kappa_g3gt0(g);
+  print g," ",kappa," ",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa),"\n"
+}
+print "-----\n"
+# Table M2, g3>0
+for(g=-6.0;g<=-2.0;g=g+1.0){
+  nu = bigg2nu_g3lt0(g);
+  print g," ",nu," ",tablek2_e1w1square(nu)," "
+  tablek2_print_e2w1square(nu)
+  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"\n"
+}
+for(g=-1.8;g<0.9;g=g+0.2){
+  nu = bigg2nu_g3lt0(g);
+  print g," ",nu," ",tablek2_e1w1square(nu)," "
+  tablek2_print_e2w1square(nu)
+  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"\n"
+}
+for(g=1.2;g<=2.0;g=g+0.2){
+  kappa = bigg2kappa_g3lt0(g);
+  print g," ",kappa," ",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa),"\n"
+}
+for(g=3.0;g<=6.0;g=g+1.0){
+  kappa = bigg2kappa_g3lt0(g);
+  print g," ",kappa," ",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa),"\n"
+}
+
