@@ -281,18 +281,49 @@ define tableg_function(uow1,kappa){
   ans = (tablef1_function_duow1(uow1,kappa)/tablef1_function(uow1,kappa));
   scale = ooscale;
   return ans;
-
 }
 
 # Table H, I, J are Weierstrass's P function
 define tableh1_p(uow1,kappa){
 # Done with Lawden (6.7.28) but somehow not correct
-  auto pi,q,z;
+  auto pi,q,z,ans,ooscale,oscale,adddigits,flag;
   pi=a(1)*4;
   #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
   q=1/e(pi*kappa);
   z=uow1*pi/2;
-  return (pi/2)^2*(theta1_dz3(0,q)/(3*theta1_dz(0,q)) - (theta1(z,q)*theta1_dz2(z,q)-theta1_dz(z,q)^2)/(theta1(z,q)^2));
+
+  flag=0;
+  ooscale=scale;
+  if(uow1==0){
+    # We know tablef1_function(0.0,kappa)==0 and thus the mathematics break down
+    print "Error: tableh1_p not designed for uow1=0\n"
+    return 0;
+  }
+  while(flag==0){
+    adddigits=2*l(abs(theta1(z,q)))/l(10);
+    oscale=scale;
+    if(adddigits<0){ # Need to add digits
+      if(adddigits>-2*oscale){ # adddigits unable to correctly reflect the number of digits needed
+        scale = 0;
+        scale = ooscale-2*adddigits/1+1;
+        if(oscale==scale){
+          flag = 1; # Converged
+        }else{
+          flag = 0; # Not converge, compute once more
+        }
+      }else{ # So try to recompute adddigits with higher precision
+        oscale = oscale + 5;
+        scale = oscale;
+        flag = 0;
+      }
+    }else{ # No need to add digits
+      scale = oscale;
+      flag = 1;
+    }
+  }
+  ans = (pi/2)^2*(theta1_dz3(0,q)/(3*theta1_dz(0,q)) - (theta1(z,q)*theta1_dz2(z,q)-theta1_dz(z,q)^2)/(theta1(z,q)^2));
+  scale = ooscale;
+  return ans;
 }
 
 # Need one more time of differentiation
@@ -324,12 +355,13 @@ define tableg_function_duow1(uow1,kappa){
   # Taking some measure to increase scale preventing loss of precision due to tablef1_function close to zero
   flag=0;
   ooscale=scale;
-  if(tablef1_function(uow1,kappa)==0){
-    print "Not differentiable?\n"
+  if(uow1==0){
+    # We know tablef1_function(0.0,kappa)==0 and thus the mathematics break down
+    print "Error -- tableg_function_duow1 received uow1=0\n"
     return 0;
   }
   while(flag==0){
-    adddigits=l(abs(tablef1_function(uow1,kappa)))/l(10);
+    adddigits=2*l(abs(tablef1_function(uow1,kappa)))/l(10);
     oscale=scale;
     if(adddigits<0){ # Need to add digits
       if(adddigits>-2*oscale){ # adddigits unable to correctly reflect the number of digits needed
@@ -404,12 +436,45 @@ define tablek1_g3w1sixth(kappa){
 }
 
 define tablei_p(uow1,kappa){
-  auto e1,e2,e3;
+  auto e1,e2,e3,ans,ooscale,oscale,adddigits,flag;
   e1=tablek1_e1w1square(kappa);
   e2=tablek1_e2w1square(kappa);
   e3=tablek1_e3w1square(kappa);
-# Applying Lawden (6.8.13)
-  return e3 + ((e3-e1)*(e3-e2))/(tableh1_p(uow1,kappa)-e3);  
+# Applying Lawden (6.8.13) , but this breaks down when uow1==1.0
+  if(uow1==0){
+    return e3; # The second term vanishes?
+  }else{
+  # Before differentiation it is tablef1_function_duow1(uow1,kappa)/tablef1_function(uow1,kappa);
+    # Taking some measure to increase scale preventing loss of precision due to tablef1_function close to zero
+    flag=0;
+    ooscale=scale;
+    while(flag==0){
+      adddigits=l(abs(tableh_p(uow1,kappa)-e3))/l(10);
+      oscale=scale;
+      if(adddigits<0){ # Need to add digits
+        if(adddigits>-2*oscale){ # adddigits unable to correctly reflect the number of digits needed
+          scale = 0;
+          scale = ooscale-2*adddigits/1+1;
+          if(oscale==scale){
+            flag = 1; # Converged
+          }else{
+            flag = 0; # Not converge, compute once more
+          }
+        }else{ # So try to recompute adddigits with higher precision
+          oscale = oscale + 5;
+          scale = oscale;
+          flag = 0;
+        }
+      }else{ # No need to add digits
+        scale = oscale;
+        flag = 1;
+      }
+    }
+    e3=tablek1_e3w1square(kappa);
+    ans = e3 + ((e3-e1)*(e3-e2))/(tableh_p(uow1,kappa)-e3);
+    scale = ooscale;
+    return ans;
+  }
 }
 
 # Table J if formally computed via theta will require complex number q

@@ -30,7 +30,7 @@ Copyright retained until further notice (or change of this line.
 |<code>table_F_termio.bc</code> |Computes Table F. Default takes ~1.557 sec. |
 |<code>table_G_termio.bc</code> |Computes Table G. Default takes ~2.142 sec. |
 |<code>table_H_termio.bc</code> |Computes Table H. Default takes ~1.302 sec. (Need debug as there are two functions doing the same thing and both are not fully correct over all inputs.) |
-|<code>table_I_termio.bc</code> |Computes Table I. (Need debug) |
+|<code>table_I_termio.bc</code> |Computes Table I. Default takes ~45.130 sec.|
 |<code>table_J_termio.bc</code> |Computes Table J. Default takes ~1.568 sec. |
 |<code>table_K_termio.bc</code> |Computes Table K. Default takes ~3.892 sec. |
 |<code>table_M_termio.bc</code> |Computes Table M. Default takes ~38.969 sec. |
