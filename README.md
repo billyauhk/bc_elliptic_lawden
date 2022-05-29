@@ -21,7 +21,19 @@ Copyright retained until further notice (or change of this line.
 | File | Uses |
 | ---- | ---- |
 |<code>README.md</code> |This markdown README file. |
-|<code>Lawden.bc</code> |The single file which contains all stuff. To be split so that the reproduction could be somehow automated. |
+|<code>lawden.bc</code> |The single file which contains all stuff for computations. Table-making codes are split into other files. |
+|<code>table_A_termio.bc</code> |Computes Table A. Default takes ~1.379 sec.|
+|<code>table_B_termio.bc</code> |Computes Table B. Default takes ~10.501 sec. |
+|<code>table_C_termio.bc</code> |Computes Table C. Default takes ~13.771 sec. |
+|<code>table_D_termio.bc</code> |Computes Table D. Default takes ~609.308 sec. Simply too slow. |
+|<code>table_E_termio.bc</code> |Computes Table E. Default takes ~12.076 sec. |
+|<code>table_F_termio.bc</code> |Computes Table F. Default takes ~1.557 sec. |
+|<code>table_G_termio.bc</code> |Computes Table G. Default takes ~2.142 sec. |
+|<code>table_H_termio.bc</code> |Computes Table H. Default takes ~1.302 sec. (Need debug as there are two functions doing the same thing and both are not fully correct over all inputs.) |
+|<code>table_I_termio.bc</code> |Computes Table I. (Need debug) |
+|<code>table_J_termio.bc</code> |Computes Table J. Default takes ~1.568 sec. |
+|<code>table_K_termio.bc</code> |Computes Table K. Default takes ~3.892 sec. |
+|<code>table_M_termio.bc</code> |Computes Table M. Default takes ~38.969 sec. |
 
 ### Functions inside Lawden.bc
 For obvious reason, the mathematical notation used in the description will stick to notations used in Lawden's book. Ordered by the order of appearance in the code.
@@ -64,10 +76,10 @@ For obvious reason, the mathematical notation used in the description will stick
 |<code>sigma3_function(uow1,kappa)</code> |Returns $\sigma_3(u,\omega_1,i\kappa\omega_1)$ for Table F. |
 |<code>tablef1_function_duow1(uow1,kappa)</code> |Returns the derivative of <code>tablef1_function(uow1,kappa)</code>, for Table G. |
 |<code>tableg_function(uow1,kappa)</code> |Returns $\omega_1\zeta(u,\omega_1,i\kappa\omega_1)$ for Table G. |
-|<code>tableh1_p(uow1,kappa)</code> |Returns $\omega_1^2\wp(u,\omega_1,i\kappa\omega_1)$ for Table H.|
+|<code>tableh1_p(uow1,kappa)</code> |Returns $\omega_1^2\wp(u,\omega_1,i\kappa\omega_1)$ for Table H. **Problem: Two functions!?** |
 |<code>tablef1_function_duow2(uow1,kappa)</code> |Returns the derivative of <code>tablef1_function_duow1(uow1,kappa)</code>, for <code>tableg_function_duow1(uow1,kappa)</code> below. |
 |<code>tableg_function_duow1(uow1,kappa)</code> |Returns the derivative of <code>tableg_function(uow1,kappa)</code>, for <code>tableh_p(uow1,kappa)</code> below. |
-|<code>tableh_p(uow1,kappa)</code> |Returns $\omega_1^2\wp(u,\omega_1,i\kappa\omega_1)$ for Table H. |
+|<code>tableh_p(uow1,kappa)</code> |Returns $\omega_1^2\wp(u,\omega_1,i\kappa\omega_1)$ for Table H. **Problem: Two functions!?** |
 |<code>tablek1_e1w1square(kappa)</code> |Returns $\omega_1^2 e_1$ for upper half of Table K. |
 |<code>tablek1_e2w1square(kappa)</code> |Returns $\omega_1^2 e_2$ for upper half of Table K. |
 |<code>tablek1_e3w1square(kappa)</code> |Returns $\omega_1^2 e_3$ for upper half of Table K. |

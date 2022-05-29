@@ -1,0 +1,18 @@
+# Table A
+print "Function Theta 1\n"
+for(q=.1;q<=0.81;q=q+0.1){
+  print "q=",q,"\nx deg\tTheta 1\tTheta 3\n"
+  for(x=0;x<=90;x=x+1){
+    print x,"\t",theta1deg(x,q),"\t",theta3deg(x,q),"\n";
+  }
+  print "\n"
+}
+print "Function Theta 2\n"
+for(q=.1;q<=0.81;q=q+0.1){
+  print "q=",q,"\nx deg\tTheta 2\tTheta 4\n"
+  for(x=0;x<=90;x=x+1){
+    print x,"\t",theta2deg(x,q),"\t",theta4deg(x,q),"\n";
+  }
+  print "\n"
+}
+quit

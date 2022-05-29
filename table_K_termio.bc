@@ -1,0 +1,22 @@
+# Table K
+oscale=scale;
+scale=10
+
+# Table K1
+for(kappa=0.1;kappa<=2.0;kappa=kappa+0.1){
+  print kappa,":",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa)," ",tablek1_bigg(kappa),"\n"
+}
+scale=oscale;
+print "-----\n"
+
+# Table K2
+oscale=scale;
+scale=20;
+for(nu=0.2;nu<=4.0;nu=nu+0.2){
+  print nu,":",tablek2_e1w1square(nu)," ";
+  tablek2_print_e2w1square(nu)
+  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu)," ",tablek2_bigg(nu),"\n"
+}
+scale=oscale;
+print "=====\n"
+quit

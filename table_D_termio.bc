@@ -1,0 +1,25 @@
+# Table D: Legendre's Incomplete integrals of 1st and 2nd kind
+
+# Table D1 -- First Kind, F(phi, k)
+oscale=scale;
+scale=15; # When scale=10 fails to match every digits at big k and phi
+for(phi=0;phi<=90;phi=phi+1){
+  print phi,":";
+  for(k=0.1;k<=0.9;k=k+0.1){
+    print tabled1_1stkind_deg(phi,k)," ";
+  }
+  print "\n"
+}
+
+# Table D2 -- Second Kind, D(phi, k)
+oscale=scale;
+scale=15; # When scale=10 fails to match every digits at big k and phi
+for(phi=0;phi<=90;phi=phi+1){
+  print phi,":";
+  for(k=0.1;k<=0.9;k=k+0.1){
+    print tabled2_integral_e(tabled1_1stkind_deg(phi,k),k)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+quit

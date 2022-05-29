@@ -1,0 +1,52 @@
+# Table M
+oscale=scale;
+scale=15; # scale = 10 fail to reproduce the number to 4d.p.
+# Table M1, g3>0
+for(g=-6.0;g<=-2.0;g=g+1.0){
+  nu = bigg2nu_g3gt0(g);
+  print g," ",nu," ",tablek2_e1w1square(nu)," "
+  tablek2_print_e2w1square(nu)
+  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"\n"
+}
+for(g=-1.8;g<1.0;g=g+0.2){
+  nu = bigg2nu_g3gt0(g);
+  print g," ",nu," ",tablek2_e1w1square(nu)," "
+  tablek2_print_e2w1square(nu)
+  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"\n"
+}
+print "1.0 +oo [";
+nu=10^2; # A pseudo-infinity
+print tablek2_e1w1square(nu)," "
+tablek2_print_e2w1square(nu)
+print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"]\n"
+for(g=1.2;g<=2.0;g=g+0.2){
+  kappa = bigg2kappa_g3gt0(g);
+  print g," ",kappa," ",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa),"\n"
+}
+for(g=3.0;g<=6.0;g=g+1.0){
+  kappa = bigg2kappa_g3gt0(g);
+  print g," ",kappa," ",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa),"\n"
+}
+print "-----\n"
+# Table M2, g3>0
+for(g=-6.0;g<=-2.0;g=g+1.0){
+  nu = bigg2nu_g3lt0(g);
+  print g," ",nu," ",tablek2_e1w1square(nu)," "
+  tablek2_print_e2w1square(nu)
+  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"\n"
+}
+for(g=-1.8;g<0.9;g=g+0.2){
+  nu = bigg2nu_g3lt0(g);
+  print g," ",nu," ",tablek2_e1w1square(nu)," "
+  tablek2_print_e2w1square(nu)
+  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"\n"
+}
+for(g=1.2;g<=2.0;g=g+0.2){
+  kappa = bigg2kappa_g3lt0(g);
+  print g," ",kappa," ",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa),"\n"
+}
+for(g=3.0;g<=6.0;g=g+1.0){
+  kappa = bigg2kappa_g3lt0(g);
+  print g," ",kappa," ",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa),"\n"
+}
+quit

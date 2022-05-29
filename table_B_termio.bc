@@ -1,0 +1,6 @@
+# Incomplete Table B
+# The last ksq=1.0 line was skipped
+for(ksq=0.0;ksq<=0.99;ksq=ksq+0.01){
+  print ksq,"\t",k2q(sqrt(ksq)),"\t",smallk2bigk(sqrt(ksq)),"\t",smallk2bige(sqrt(ksq)),"\t",1-ksq,"\n"
+}
+quit

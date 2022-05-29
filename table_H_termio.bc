@@ -1,0 +1,17 @@
+# Table H
+oscale=scale;
+scale=10;
+for(subpage=0;subpage<4;subpage=subpage+1){
+print "[PAGE ",subpage+1,"]\n"
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+for(kappa=0.1+subpage*0.5;kappa<0.1+(subpage+1)*0.5;kappa=kappa+0.1){
+  print tableh1_p(uow1,kappa)," "
+}
+  print "\n"
+}
+print "-----\n"
+}
+print "=====\n"
+scale=oscale;
+quit

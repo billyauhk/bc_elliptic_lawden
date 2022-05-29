@@ -1,0 +1,50 @@
+# Table F is sigma function (sigma, sigma_1, sigma_2, sigma_3)
+
+oscale=scale;
+# This is Table F1
+scale=10;
+for(uow1=0.0;uow1<=2.0;uow1=uow1+0.1){
+  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
+    print tablef1_function(uow1,kappa)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+print "=====\n"
+
+oscale=scale;
+# Table F2
+scale=10;
+for(uow1=0.0;uow1<=2.0;uow1=uow1+0.1){
+  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
+    print sigma1_function(uow1,kappa)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+print "=====\n"
+
+oscale=scale;
+# Table F3
+scale=10;
+for(uow1=0.0;uow1<=2.0;uow1=uow1+0.1){
+  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
+    print sigma2_function(uow1,kappa)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+print "=====\n"
+
+oscale=scale;
+# Table F4
+scale=10;
+for(uow1=0.0;uow1<=2.0;uow1=uow1+0.1){
+  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
+    print sigma3_function(uow1,kappa)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+print "=====\n"
+quit

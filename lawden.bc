@@ -113,27 +113,7 @@ define theta3_dz2(z,q){
 }
 define theta4_dz2(z,q){return theta3_dz2(z-a(1)*2,q);}
 
-# This is Table A
-/*
-print "Function Theta 1\n"
-for(q=.1;q<=0.81;q=q+0.1){
-  print "q=",q,"\nx deg\tTheta 1\tTheta 3\n"
-  for(x=0;x<=90;x=x+1){
-    print x,"\t",theta1deg(x,q),"\t",theta3deg(x,q),"\n";
-  }
-  print "\n"
-}
-print "Function Theta 2\n"
-for(q=.1;q<=0.81;q=q+0.1){
-  print "q=",q,"\nx deg\tTheta 2\tTheta 4\n"
-  for(x=0;x<=90;x=x+1){
-    print x,"\t",theta2deg(x,q),"\t",theta4deg(x,q),"\n";
-  }
-  print "\n"
-}
-*/
-
-# A better implementatin of this may be needed in the future
+# A better implementation of this may be needed in the future
 define k2q(k){
   auto kt,lo,hi,mid;
   /* Solving k = (theta2(0,q)/theta3(0,q))^2 */
@@ -197,24 +177,6 @@ define jacobi_zeta(u,k){
   return (1/theta3(0,q))^2 * (theta4_dz(x,q)/theta4(x,q));
 }
 
-# This is an incomplete Table B
-/*
-for(ksq=0.0;ksq<=0.99;ksq=ksq+0.01){
-  print ksq,"\t",k2q(sqrt(ksq)),"\t",smallk2bigk(sqrt(ksq)),"\t",smallk2bige(sqrt(ksq)),"\t",1-ksq,"\n"
-}
-*/
-
-# This is Table C
-/*
-for(k=0.1;k<=0.9;k=k+0.1){
-  maxx = smallk2bigk(k);
-  print "[k=",k,"; K=",maxx,"]\n"
-  for(x=0.0;x<maxx;x=x+0.1){
-    print x,":",sn(x,k),"\t",cn(x,k),"\t",dn(x,k),"\n";
-  }
-}
-*/
-
 /* sn^-1(sin phi,k) */
 define tabled1_1stkind_deg(phi,k){
   auto target,snt,lo,hi,mid;
@@ -236,47 +198,6 @@ define tabled2_integral_e(u,k){
   return (theta4_dz(x,q)/(theta3(0,q)^2*theta4(x,q)))+u*(1-theta4_dz2(0,q)/(theta3(0,q)^4*theta4(0,q)));
 }
 
-# Table D is Legendre's Incomplete integrals of 1st and 2nd kind
-# This is Table D1 -- First Kind, F(phi, k)
-/*
-oscale=scale;
-scale=15; # When scale=10 fails to match every digits at big k and phi
-for(phi=0;phi<=90;phi=phi+1){
-  print phi,":";
-  for(k=0.1;k<=0.9;k=k+0.1){
-    print tabled1_1stkind_deg(phi,k)," ";
-  }
-  print "\n"
-}
-scale=oscale;
-*/
-
-# This is Table D2 -- Second Kind, D(phi, k)
-/*
-oscale=scale;
-scale=15; # When scale=10 fails to match every digits at big k and phi
-for(phi=0;phi<=90;phi=phi+1){
-  print phi,":";
-  for(k=0.1;k<=0.9;k=k+0.1){
-    print tabled2_integral_e(tabled1_1stkind_deg(phi,k),k)," ";
-  }
-  print "\n"
-}
-scale=oscale;
-*/
-
-# This is Table E
-/*
-for(k=0.1;k<=0.9;k=k+0.1){
-  maxz = smallk2bigk(k);
-  print "[k=",k,"; K=",maxz,"]\n"
-  for(z=0.1;z<maxz;z=z+0.1){
-    print z,":",jacobi_zeta(z,k),"\t",jacobi_epsilon(z,k),"\n";
-  }
-}
-*/
-
-# Table F is sigma function (sigma, sigma_1, sigma_2, sigma_3)
 define tablef1_function(uow1,kappa){
 # Lawden P.152: omega_1^{-1} sigma(u,omega_1,omega_3) = sigma(u/omega,1,tau)
   auto pi,q;
@@ -315,56 +236,6 @@ define sigma3_function(uow1,kappa){
   z=pi/2*uow1;
   return (theta4(z,q)/theta4(0,q))/e(pi^2/24 * (theta1_dz3(0,q)/theta1_dz(0,q)) * uow1^2);
 }
-
-/*
-oscale=scale;
-# This is Table F1
-scale=10;
-for(uow1=0.0;uow1<=2.0;uow1=uow1+0.1){
-  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
-    print tablef1_function(uow1,kappa)," ";
-  }
-  print "\n"
-}
-scale=oscale;
-print "=====\n"
-
-oscale=scale;
-# Table F2
-scale=10;
-for(uow1=0.0;uow1<=2.0;uow1=uow1+0.1){
-  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
-    print sigma1_function(uow1,kappa)," ";
-  }
-  print "\n"
-}
-scale=oscale;
-print "=====\n"
-
-oscale=scale;
-# Table F3
-scale=10;
-for(uow1=0.0;uow1<=2.0;uow1=uow1+0.1){
-  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
-    print sigma2_function(uow1,kappa)," ";
-  }
-  print "\n"
-}
-scale=oscale;
-print "=====\n"
-
-oscale=scale;
-# Table F4
-scale=10;
-for(uow1=0.0;uow1<=2.0;uow1=uow1+0.1){
-  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
-    print sigma3_function(uow1,kappa)," ";
-  }
-  print "\n"
-}
-scale=oscale;
-print "=====\n"
-*/
 
 # Table G is Weierstrass's Zeta fucntion
 define tablef1_function_duow1(uow1,kappa){
@@ -413,21 +284,6 @@ define tableg_function(uow1,kappa){
 
 }
 
-/*
-oscale=scale;
-# This is Table G
-scale=10; # At scale = 10 some division by zero occured; at scale = 15 it fails to match to 4d.p.
-for(uow1=0.1;uow1<=1.9;uow1=uow1+0.1){
-  print "uow1=",uow1,":";
-  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
-    print tableg_function(uow1,kappa)," ";
-  }
-  print "\n"
-}
-scale=oscale;
-print "=====\n"
-*/
-
 # Table H, I, J are Weierstrass's P function
 define tableh1_p(uow1,kappa){
 # Done with Lawden (6.7.28) but somehow not correct
@@ -468,6 +324,10 @@ define tableg_function_duow1(uow1,kappa){
   # Taking some measure to increase scale preventing loss of precision due to tablef1_function close to zero
   flag=0;
   ooscale=scale;
+  if(tablef1_function(uow1,kappa)==0){
+    print "Not differentiable?\n"
+    return 0;
+  }
   while(flag==0){
     adddigits=l(abs(tablef1_function(uow1,kappa)))/l(10);
     oscale=scale;
@@ -499,25 +359,6 @@ define tableg_function_duow1(uow1,kappa){
 define tableh_p(uow1,kappa){
   return -tableg_function_duow1(uow1,kappa);
 }
-
-# This is Table H
-/*
-oscale=scale;
-scale=10;
-for(subpage=0;subpage<4;subpage=subpage+1){
-print "[PAGE ",subpage+1,"]\n"
-for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
-  print uow1,":"
-for(kappa=0.1+subpage*0.5;kappa<0.1+(subpage+1)*0.5;kappa=kappa+0.1){
-  print tableh_p(uow1,kappa)," "
-}
-  print "\n"
-}
-print "-----\n"
-}
-print "=====\n"
-scale=oscale;
-*/
 
 # Table K is stationary and invariants of P
 define tablek1_e1w1square(kappa){
@@ -570,25 +411,6 @@ define tablei_p(uow1,kappa){
 # Applying Lawden (6.8.13)
   return e3 + ((e3-e1)*(e3-e2))/(tableh1_p(uow1,kappa)-e3);  
 }
-
-# This is Table I, after applying (6.8.13)
-/*
-oscale=scale;
-scale=10;
-for(subpage=0;subpage<4;subpage=subpage+1){
-print "[PAGE ",subpage+1,"]\n"
-for(uow1=0.00;uow1<=1.0;uow1=uow1+0.02){
-  print uow1,":"
-for(kappa=0.1+subpage*0.5;kappa<0.1+(subpage+1)*0.5;kappa=kappa+0.1){
-  print tablei_p(uow1,kappa)," "
-}
-  print "\n"
-}
-print "-----\n"
-}
-print "=====\n"
-scale=oscale;
-*/
 
 # Table J if formally computed via theta will require complex number q
 # The work-around is Lawden Ch 6 Exe 22 which was also recommended by the book
@@ -680,25 +502,6 @@ define tablej_p_duow1(uow1,nu){
   return ans;
 }
 
-/*
-# This is Table J
-oscale=scale;
-scale=10;
-for(subpage=0;subpage<4;subpage=subpage+1){
-print "[PAGE ",subpage+1,"]\n"
-for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
-  print uow1,":"
-for(nu=0.2+subpage*1.0;nu<0.2+(subpage+1)*1.0;nu=nu+0.2){
-  print tablej_p(uow1,nu)," "
-}
-  print "\n"
-}
-print "-----\n"
-}
-print "=====\n"
-scale=oscale;
-*/
-
 define tablek1_bigg(kappa){
 # Lawden 6.16.2 -- G = g_2^3 / (27 g_3^2) -- (g2w1^4)^3 / (27 (g3w1^6)^2)
   auto num,den;
@@ -713,15 +516,6 @@ define tablek1_bigg(kappa){
     return 0;
   }
 }
-
-oscale=scale;
-scale=10
-# This is Table K1
-for(kappa=0.1;kappa<=2.0;kappa=kappa+0.1){
-  print kappa,":",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa)," ",tablek1_bigg(kappa),"\n"
-}
-scale=oscale;
-print "-----\n"
 
 # Time to work out Table K2
 define tablek2_e1w1square(nu){
@@ -778,22 +572,11 @@ define tablek2_bigg(nu){
   }
 }
 
-# This is Table K2
-oscale=scale;
-scale=20;
-for(nu=0.2;nu<=4.0;nu=nu+0.2){
-  print nu,":",tablek2_e1w1square(nu)," ";
-  tablek2_print_e2w1square(nu)
-  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu)," ",tablek2_bigg(nu),"\n"
-}
-scale=oscale;
-print "=====\n"
-
 # Table L are Weierstrass's P function
 # Computation of Table L in fact requires results of G from Table M, then should be functions of H, I and J
 
 # Table M has to be computed before Table L
-# A better implementatin of this may be needed in the future
+# A better implementation of this may be needed in the future
 define bigg2nu_g3gt0(g){
   auto gt,lo,hi,mid;
   /* Solving G = tablek2_bigg(nu) for g3>0 */
@@ -842,55 +625,3 @@ define bigg2kappa_g3lt0(g){
   }
   return mid;
 }
-
-oscale=scale;
-scale=15; # scale = 10 fail to reproduce the number to 4d.p.
-# Table M1, g3>0
-for(g=-6.0;g<=-2.0;g=g+1.0){
-  nu = bigg2nu_g3gt0(g);
-  print g," ",nu," ",tablek2_e1w1square(nu)," "
-  tablek2_print_e2w1square(nu)
-  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"\n"
-}
-for(g=-1.8;g<1.0;g=g+0.2){
-  nu = bigg2nu_g3gt0(g);
-  print g," ",nu," ",tablek2_e1w1square(nu)," "
-  tablek2_print_e2w1square(nu)
-  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"\n"
-}
-print "1.0 +oo [";
-nu=10^2; # A pseudo-infinity
-print tablek2_e1w1square(nu)," "
-tablek2_print_e2w1square(nu)
-print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"]\n"
-for(g=1.2;g<=2.0;g=g+0.2){
-  kappa = bigg2kappa_g3gt0(g);
-  print g," ",kappa," ",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa),"\n"
-}
-for(g=3.0;g<=6.0;g=g+1.0){
-  kappa = bigg2kappa_g3gt0(g);
-  print g," ",kappa," ",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa),"\n"
-}
-print "-----\n"
-# Table M2, g3>0
-for(g=-6.0;g<=-2.0;g=g+1.0){
-  nu = bigg2nu_g3lt0(g);
-  print g," ",nu," ",tablek2_e1w1square(nu)," "
-  tablek2_print_e2w1square(nu)
-  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"\n"
-}
-for(g=-1.8;g<0.9;g=g+0.2){
-  nu = bigg2nu_g3lt0(g);
-  print g," ",nu," ",tablek2_e1w1square(nu)," "
-  tablek2_print_e2w1square(nu)
-  print " ",tablek2_g2w1fourth(nu)," ",tablek2_g3w1sixth(nu),"\n"
-}
-for(g=1.2;g<=2.0;g=g+0.2){
-  kappa = bigg2kappa_g3lt0(g);
-  print g," ",kappa," ",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa),"\n"
-}
-for(g=3.0;g<=6.0;g=g+1.0){
-  kappa = bigg2kappa_g3lt0(g);
-  print g," ",kappa," ",tablek1_e1w1square(kappa)," ",tablek1_e2w1square(kappa)," ",tablek1_e3w1square(kappa)," ",tablek1_g2w1fourth(kappa)," ",tablek1_g3w1sixth(kappa),"\n"
-}
-

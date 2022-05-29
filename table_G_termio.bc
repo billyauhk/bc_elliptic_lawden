@@ -1,0 +1,14 @@
+# Table G
+
+oscale=scale;
+scale=10; # At scale = 10 some division by zero occured; at scale = 15 it fails to match to 4d.p.
+for(uow1=0.1;uow1<=1.9;uow1=uow1+0.1){
+  print "uow1=",uow1,":";
+  for(kappa=0.2;kappa<=2.0;kappa=kappa+0.2){
+    print tableg_function(uow1,kappa)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+print "=====\n"
+quit

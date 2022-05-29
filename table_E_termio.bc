@@ -1,0 +1,9 @@
+# Table E
+for(k=0.1;k<=0.9;k=k+0.1){
+  maxz = smallk2bigk(k);
+  print "[k=",k,"; K=",maxz,"]\n"
+  for(z=0.1;z<maxz;z=z+0.1){
+    print z,":",jacobi_zeta(z,k),"\t",jacobi_epsilon(z,k),"\n";
+  }
+}
+quit
