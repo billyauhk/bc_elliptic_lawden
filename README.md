@@ -11,9 +11,11 @@
 * Coding style and comments
 ### History
 * Before git repository created in the morning of 29May2022, this piece of work starts from the theta functions which are defined in Chapter 1 on 12Oct2021.
-* Originally for implementing some of the mathematics in preparation for other works, bringing me to study elliptic function + integral from scratch.
+* Originally for implementing some of the mathematics needed by other works which required me to study elliptic function + integral from scratch.
 * Later agree (with myself) to reproduce all Mathematical Tables at the end of the book first, making sure I could get the numbers whenever I need.
 * Sometimes numbers are checked against Mathematica on a Raspberry Pi (always thanks Wolfram for making that available).
+### License
+Copyright retained until further notice (or change of this line.
 ### Files
 
 | File | Uses |
