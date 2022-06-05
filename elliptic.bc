@@ -1,0 +1,162 @@
+/* Trial of DLMF-based computations*/
+scale = 40;
+pi=a(1)*4;
+
+define d2r(x){
+  return (x/180*pi);
+}
+
+define num_rc(x,y){
+#  print "CALL: num_RC(",x,",",y,")\n"
+  if((0<x) && (x<y)){
+#print "CASE 1\n"
+    return a(sqrt((y-x)/x))/sqrt(y-x); /* DLMF 19.2.18 */
+  }else if((x==0) && (x<y)){
+#print "CASE 2\n"
+    return (a(1)*2)/sqrt(y-x); /* DLMF 19.2.18 */
+  }else if((0<y) && (y<x)){
+#print "CASE 3\n"
+    return l((sqrt(x)+sqrt(x-y))/sqrt(y))/sqrt(x-y); /* DLMF 19.2.19 */
+  }else if(x==y){
+#print "CASE 4\n"
+    return 1/sqrt(x);
+  }else{
+    print "Error: num_RC(",x,",",y,")\n"
+    return 0;
+  }
+}
+
+define num_rf_sorted(x,y,z){
+  auto c0,a0,t0,cp,ap,tp,cn,an,tn,theta;
+#  print "Call: num_RF(",x,",",y,",",z,")\n"
+  if(x<0){
+    print "Error: num_RF(",x,",",y,",",z,")\n";
+    return 0;
+  }
+  if((y+y)>(x+z)){
+    theta = -1;t0 = sqrt(z);c0=sqrt(z-y);a0=sqrt(z-x);
+  }else{
+    theta =  1;t0 = sqrt(x);c0=sqrt(y-x);a0=sqrt(z-x);
+  }
+  tp=t0;cp=c0;ap=a0;
+  while(cp>0){
+#    print "RF(",tp^2,",",tp^2+theta*cp^2,",",tp^2+theta*ap^2,")\n";
+    an=(ap+sqrt(ap^2-cp^2))/2;
+    cn=(ap-sqrt(ap^2-cp^2))/2;
+    tn=(tp+sqrt(tp^2+theta*cp^2))/2;
+    tp=tn;cp=cn;ap=an;
+  }
+#  print "RF(",tp^2,",",tp^2+theta*cp^2,",",tp^2+theta*ap^2,")\n";  
+  return num_rc(tp^2+theta*ap^2,tp^2);
+}
+
+/* Descriptions at DLMF 19.36(ii) recommends permutation (sorting) so that 0<=x<y<z */
+define num_rf_unsorted(x,y,z){
+  if(x<y){
+    if(y<z){
+      return num_rf_sorted(x,y,z);
+    }else{
+      if(x<z){
+        return num_rf_sorted(x,z,y);
+      }else{
+        return num_rf_sorted(z,x,y);
+      }
+    }
+  }else{
+    if(x<z){
+      return num_rf_sorted(y,x,z);
+    }else{
+      if(y<z){
+        return num_rf_sorted(y,z,x);
+      }else{
+        return num_rf_sorted(z,y,x);
+      }
+    }
+  }
+}
+
+define num_rg_sorted(x,y,z){
+  auto c0,a0,t0,h0,cp,ap,tp,hp,cn,an,tn,hn,csum,hsum,theta,m;
+  /* First handling some quick cases according to DLMF 19.20.4 */
+  if((x==y)&&(y==z)){
+    return 1/sqrt(x);
+  }else if(x==0){
+    if(y==z){
+      return (a(1)*sqrt(y));
+    }else if(y==0){
+      return sqrt(z)/2;
+    }
+  }
+  if(y==z){
+    return y*num_rc(x,y)+sqrt(x);
+  }
+
+  if((y+y)>(x+z)){
+    theta = -1;t0 = sqrt(z);c0=sqrt(z-y);a0=sqrt(z-x);
+  }else{
+    theta =  1;t0 = sqrt(x);c0=sqrt(y-x);a0=sqrt(z-x);
+  }
+  tp=t0;cp=c0;ap=a0;h0=sqrt(t0^2+theta*a0^2);hp=h0;
+  m=0;hsum=0;csum=c0^2/2;
+  while(cp>0){
+    an=(ap+sqrt(ap^2-cp^2))/2;
+    cn=(ap-sqrt(ap^2-cp^2))/2;
+    tn=(tp+sqrt(tp^2+theta*cp^2))/2;
+    hn=sqrt(tn^2+theta*an^2);
+    tp=tn;cp=cn;ap=an;m=m+1;
+    csum=csum+(2^(m-1))*(cn^2);
+    hsum=hsum+2^m*(hn-hp);
+    hp=hn;
+  }
+  csum=csum+(2^m)*(cn^2);
+  return ((t0^2+theta*csum)*num_rf_unsorted(tn^2,tn^2+theta*cn^2,tn^2+theta*an^2)+h0+hsum)/2;
+}
+
+/* Descriptions at DLMF 19.36(ii) recommends permutation (sorting) so that 0<=x<y<z */
+define num_rg_unsorted(x,y,z){
+  if(x<y){
+    if(y<z){
+      return num_rg_sorted(x,y,z);
+    }else{
+      if(x<z){
+        return num_rg_sorted(x,z,y);
+      }else{
+        return num_rg_sorted(z,x,y);
+      }
+    }
+  }else{
+    if(x<z){
+      return num_rg_sorted(y,x,z);
+    }else{
+      if(y<z){
+        return num_rg_sorted(y,z,x);
+      }else{
+        return num_rg_sorted(z,y,x);
+      }
+    }
+  }
+}
+
+define num_legendre_incomplete_f(phi,e){
+  /* DLMF 19.25.5 */
+  /* Function divide by zero near 0° */
+  auto c;
+  if(phi>0){
+    c=1/(s(d2r(phi))^2);
+    return num_rf_unsorted(c-1,c-e^2,c);
+  }else if(phi==0){
+    return 0;
+  }
+}
+
+define num_legendre_incomplete_e(phi,e){
+  /* DLMF 19.25.7 */
+  /* Function divide by zero near 0° or 90° */
+  auto c;
+  if(phi>0){
+    c=1/(s(d2r(phi))^2);
+    return 2*num_rg_unsorted(c-1,c-e^2,c)-(c-1)*num_rf_unsorted(c-1,c-e^2,c)-sqrt(c-1)*sqrt(c-e^2)/sqrt(c);
+  }else if(phi==0){
+    return 0;
+  }
+}

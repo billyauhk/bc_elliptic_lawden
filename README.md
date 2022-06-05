@@ -22,15 +22,16 @@ Copyright retained until further notice (or change of this line.
 | ---- | ---- |
 |<code>README.md</code> |This markdown README file. |
 |<code>lawden.bc</code> |The single file which contains all stuff for computations. Table-making codes are split into other files. |
+|<code>elliptic.bc</code> |DLMF-based implementation of Legendre's incomplete integrals of 1st and 2nd kind for Table D, replacing slow methods Lawden book recommends. |
 |<code>table_A_termio.bc</code> |Computes Table A. Default takes ~1.379 sec.|
 |<code>table_B_termio.bc</code> |Computes Table B. Default takes ~10.501 sec. |
 |<code>table_C_termio.bc</code> |Computes Table C. Default takes ~13.771 sec. |
-|<code>table_D_termio.bc</code> |Computes Table D. Default takes ~609.308 sec. Simply too slow. |
-|<code>table_E_termio.bc</code> |Computes Table E. Default takes ~12.076 sec. |
-|<code>table_F_termio.bc</code> |Computes Table F. Default takes ~1.557 sec. |
+|<code>table_D_termio.bc</code> |Computes Table D. Default takes ~1.083 sec which uses Carlson integrals and formula on DLMF. Takes ~609.308 sec if use what the Lawden book described and too slow. |
+|<code>table_E_termio.bc</code> |Computes Table E. Default takes ~9.853 sec. |
+|<code>table_F_termio.bc</code> |Computes Table F. Default takes ~0.795 sec. |
 |<code>table_G_termio.bc</code> |Computes Table G. Default takes ~2.142 sec. |
 |<code>table_H_termio.bc</code> |Computes Table H. Default takes ~1.302 sec. (Need debug as there are two functions doing the same thing and both are not fully correct over all inputs.) |
-|<code>table_I_termio.bc</code> |Computes Table I. Default takes ~45.130 sec.|
+|<code>table_I_termio.bc</code> |Computes Table I. Default takes ~129.91 sec.|
 |<code>table_J_termio.bc</code> |Computes Table J. Default takes ~1.568 sec. |
 |<code>table_K_termio.bc</code> |Computes Table K. Default takes ~3.892 sec. |
 |<code>table_M_termio.bc</code> |Computes Table M. Default takes ~38.969 sec. |

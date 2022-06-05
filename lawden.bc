@@ -200,11 +200,38 @@ define tabled2_integral_e(u,k){
 
 define tablef1_function(uow1,kappa){
 # Lawden P.152: omega_1^{-1} sigma(u,omega_1,omega_3) = sigma(u/omega,1,tau)
-  auto pi,q;
+  auto pi,q,ans,ooscale,oscale,adddigits,flag;
   pi=a(1)*4;
   #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
-  q=1/e(pi*kappa); 
-  return 2/(pi*theta1_dz(0,q)) / e(pi^2/24 * (theta1_dz3(0,q)/theta1_dz(0,q)) * uow1^2) * theta1(pi*uow1/2,q);
+  q=1/e(pi*kappa);
+# Adding new code in hope to suppress numerical error
+  flag=0;
+  ooscale=scale;
+  while(flag==0){
+    adddigits=2*l(abs(theta1_dz(0,q)))/l(10);
+    oscale=scale;
+    if(adddigits<0){ # Need to add digits
+      if(adddigits>-2*oscale){ # adddigits unable to correctly reflect the number of digits needed
+        scale = 0;
+        scale = ooscale-2*adddigits/1+1;
+        if(oscale==scale){
+          flag = 1; # Converged
+        }else{
+          flag = 0; # Not converge, compute once more
+        }
+      }else{ # So try to recompute adddigits with higher precision
+        oscale = oscale + 5;
+        scale = oscale;
+        flag = 0;
+      }
+    }else{ # No need to add digits
+      scale = oscale;
+      flag = 1;
+    }
+  }
+  ans = 2/(pi*theta1_dz(0,q)) / e(pi^2/24 * (theta1_dz3(0,q)/theta1_dz(0,q)) * uow1^2) * theta1(pi*uow1/2,q);
+  scale = ooscale;
+  return ans;
 }
 
 define sigma1_function(uow1,kappa){
@@ -287,20 +314,21 @@ define tableg_function(uow1,kappa){
 define tableh1_p(uow1,kappa){
 # Done with Lawden (6.7.28) but somehow not correct
   auto pi,q,z,ans,ooscale,oscale,adddigits,flag;
+  flag=0;
+  ooscale=scale;
+  scale=scale*2; # Request mmore digits for q
   pi=a(1)*4;
   #q = e(i pi tau) ; tau = i kappa -> q = e(-pi kappa)
   q=1/e(pi*kappa);
+  scale=ooscale;
   z=uow1*pi/2;
-
-  flag=0;
-  ooscale=scale;
   if(uow1==0){
     # We know tablef1_function(0.0,kappa)==0 and thus the mathematics break down
     print "Error: tableh1_p not designed for uow1=0\n"
     return 0;
   }
   while(flag==0){
-    adddigits=2*l(abs(theta1(z,q)))/l(10);
+    adddigits=2*l(abs(theta1(z,q)))/l(10) + l(abs(theta1_dz(0,q)))/l(10) + l(abs(theta1(z,q)*theta1_dz2(z,q)-theta1_dz(z,q)^2))/l(10);
     oscale=scale;
     if(adddigits<0){ # Need to add digits
       if(adddigits>-2*oscale){ # adddigits unable to correctly reflect the number of digits needed
@@ -321,6 +349,9 @@ define tableh1_p(uow1,kappa){
       flag = 1;
     }
   }
+#  print "SUB1=",theta1_dz3(0,q)/(3*theta1_dz(0,q)),"\n"
+#  print "SUB2=",(theta1(z,q)*theta1_dz2(z,q)-theta1_dz(z,q)^2)/(theta1(z,q)^2),"\n"
+#  print "(z=",z,",q=",q,")"
   ans = (pi/2)^2*(theta1_dz3(0,q)/(3*theta1_dz(0,q)) - (theta1(z,q)*theta1_dz2(z,q)-theta1_dz(z,q)^2)/(theta1(z,q)^2));
   scale = ooscale;
   return ans;
@@ -350,7 +381,7 @@ define tablef1_function_duow2(uow1,kappa){
 }
 
 define tableg_function_duow1(uow1,kappa){
-  auto ans,ooscale,oscale,adddigits,flag;
+  auto ans,ooscale,oscale,adddigits,funf,flag;
 # Before differentiation it is tablef1_function_duow1(uow1,kappa)/tablef1_function(uow1,kappa);
   # Taking some measure to increase scale preventing loss of precision due to tablef1_function close to zero
   flag=0;
@@ -361,7 +392,8 @@ define tableg_function_duow1(uow1,kappa){
     return 0;
   }
   while(flag==0){
-    adddigits=2*l(abs(tablef1_function(uow1,kappa)))/l(10);
+    funf = tablef1_function(uow1,kappa);
+    adddigits=2*l(abs(funf))/l(10);
     oscale=scale;
     if(adddigits<0){ # Need to add digits
       if(adddigits>-2*oscale){ # adddigits unable to correctly reflect the number of digits needed
@@ -382,12 +414,11 @@ define tableg_function_duow1(uow1,kappa){
       flag = 1;
     }
   }
-  ans = tablef1_function_duow2(uow1,kappa)/(tablef1_function(uow1,kappa)) - (tablef1_function_duow1(uow1,kappa)/tablef1_function(uow1,kappa))^2;
+  ans = tablef1_function_duow2(uow1,kappa)/(funf) - (tablef1_function_duow1(uow1,kappa)/funf)^2;
   scale = ooscale;
   return ans;
 }
 
-# Try to compute using finite difference -- mostly correct
 define tableh_p(uow1,kappa){
   return -tableg_function_duow1(uow1,kappa);
 }
@@ -436,12 +467,10 @@ define tablek1_g3w1sixth(kappa){
 }
 
 define tablei_p(uow1,kappa){
-  auto e1,e2,e3,ans,ooscale,oscale,adddigits,flag;
-  e1=tablek1_e1w1square(kappa);
-  e2=tablek1_e2w1square(kappa);
-  e3=tablek1_e3w1square(kappa);
+  auto e1,e2,e3,num,den,ans,ooscale,oscale,adddigits,flag;
 # Applying Lawden (6.8.13) , but this breaks down when uow1==1.0
   if(uow1==0){
+    e3=tablek1_e3w1square(kappa);
     return e3; # The second term vanishes?
   }else{
   # Before differentiation it is tablef1_function_duow1(uow1,kappa)/tablef1_function(uow1,kappa);
@@ -449,7 +478,9 @@ define tablei_p(uow1,kappa){
     flag=0;
     ooscale=scale;
     while(flag==0){
-      adddigits=l(abs(tableh_p(uow1,kappa)-e3))/l(10);
+      e3=tablek1_e3w1square(kappa);
+      den = tableh_p(uow1,kappa)-e3; /* This line is very slow */
+      adddigits=l(abs(den))/l(10);
       oscale=scale;
       if(adddigits<0){ # Need to add digits
         if(adddigits>-2*oscale){ # adddigits unable to correctly reflect the number of digits needed
@@ -470,8 +501,9 @@ define tablei_p(uow1,kappa){
         flag = 1;
       }
     }
-    e3=tablek1_e3w1square(kappa);
-    ans = e3 + ((e3-e1)*(e3-e2))/(tableh_p(uow1,kappa)-e3);
+    e1=tablek1_e1w1square(kappa);
+    e2=tablek1_e2w1square(kappa);
+    ans = e3 + ((e3-e1)*(e3-e2))/(den);
     scale = ooscale;
     return ans;
   }

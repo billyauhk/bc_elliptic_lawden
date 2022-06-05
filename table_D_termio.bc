@@ -1,6 +1,7 @@
 # Table D: Legendre's Incomplete integrals of 1st and 2nd kind
 
-# Table D1 -- First Kind, F(phi, k)
+/*
+# Table D1 -- First Kind, F(phi, k) (249.52 seconds typical at scale=15)
 oscale=scale;
 scale=15; # When scale=10 fails to match every digits at big k and phi
 for(phi=0;phi<=90;phi=phi+1){
@@ -10,14 +11,41 @@ for(phi=0;phi<=90;phi=phi+1){
   }
   print "\n"
 }
+scale=oscale;
+*/
 
-# Table D2 -- Second Kind, D(phi, k)
+# Table D1 -- Using elliptic.bc (0.44 seconds typical at scale=15)
+oscale=scale;
+scale=15;
+for(phi=0;phi<=90;phi=phi+1){
+  print phi,":";
+  for(k=0.1;k<=0.9;k=k+0.1){
+    print num_legendre_incomplete_f(phi,k)," ";
+  }
+  print "\n"
+}
+
+/*
+# Table D2 -- Second Kind, D(phi, k) (271.54 seconds typical at scale=15)
 oscale=scale;
 scale=15; # When scale=10 fails to match every digits at big k and phi
 for(phi=0;phi<=90;phi=phi+1){
   print phi,":";
   for(k=0.1;k<=0.9;k=k+0.1){
     print tabled2_integral_e(tabled1_1stkind_deg(phi,k),k)," ";
+  }
+  print "\n"
+}
+scale=oscale;
+*/
+
+# Table D2 -- Using elliptic.bc (0.74 seconds typical at scale=15)
+oscale=scale;
+scale=15;
+for(phi=0;phi<=90;phi=phi+1){
+  print phi,":";
+  for(k=0.1;k<=0.9;k=k+0.1){
+    print num_legendre_incomplete_e(phi,k)," ";
   }
   print "\n"
 }
