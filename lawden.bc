@@ -5,16 +5,20 @@ define sqr(x){return sqrt(x);}
 define theta1(z,q){
 # Lawden 1.2.11
   auto r,t,n,s,p;
-  r=sqr(sqr(q));
-  t=0;n=0;s=1;
-  p=1;
-  while(p>0){
-    p=q^(n*(n+1));
-    t=t+s*p*s((2*n+1)*z);
-    n=n+1;
-    s=-s; 
-  }                    
-  return 2*r*t;
+  if(z==0){
+    return 0
+  }else{
+    r=sqr(sqr(q));
+    t=0;n=0;s=1;
+    p=1;
+    while(p>0){
+      p=q^(n*(n+1));
+      t=t+s*p*s((2*n+1)*z);
+      n=n+1;
+      s=-s;
+    }
+    return 2*r*t;
+  }
 }
 
 define theta3(z,q){
@@ -22,10 +26,18 @@ define theta3(z,q){
   auto t,p,n;
   t=0;n=1;
   p=1;
-  while(p>0){
-    p=q^(n^2);
-    t=t+p*c(2*n*z);
-    n=n+1;
+  if(z==0){
+    while(p>0){
+      p=q^(n^2);
+      t=t+p;
+      n=n+1;
+    }
+  }else{
+    while(p>0){
+      p=q^(n^2);
+      t=t+p*c(2*n*z);
+      n=n+1;
+    }
   }
   return 1+(2*t);
 }
