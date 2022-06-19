@@ -1,21 +1,20 @@
 ### Aim
 * Recreating code for reproducing Mathematical Tables at the back of Lawden's elliptical function book in 1989.
 ### Status
-* Currently, code could be used to reproduce nearly all the tables (including Table L which does not have explicit code for reproduction).
-* BC is used to gain arbitrary precision capability on nearly all platforms, as BC is available nearly on all Unix.
+* Currently, code could be used to reproduce all the tables.
+* BC is used to gain arbitrary precision capability on nearly all platforms, as BC is available all nearly all Unix.
 * Not meant to be fast. Those need performance should check <code>fredrik-johansson/mpmath</code>.
 * Accuracy and speed of the functions inside the code varies, but given a good enough (high enough) scale value and time, it could reproduce the numbers.
 ### To-Do
-* Split the single file into a batch of files.
-* More rigorous check against cancellation error or precision loss due to divisions.
-* Coding style and comments
+* Making more rigorous check against cancellation error or precision loss due to divisions.
+* Fixing coding style and comments
 ### History
 * Before git repository created in the morning of 29May2022, this piece of work starts from the theta functions which are defined in Chapter 1 on 12Oct2021.
 * Originally for implementing some of the mathematics needed by other works which required me to study elliptic function + integral from scratch.
 * Later agree (with myself) to reproduce all Mathematical Tables at the end of the book first, making sure I could get the numbers whenever I need.
 * Sometimes numbers are checked against Mathematica on a Raspberry Pi (always thanks Wolfram for making that available).
 ### License
-Copyright retained until further notice (or change of this line.
+Copyright retained until further notice (or change of this line).
 ### Files
 
 | File | Uses |
@@ -30,10 +29,11 @@ Copyright retained until further notice (or change of this line.
 |<code>table_E_termio.bc</code> |Computes Table E. Default takes ~5.26 sec. |
 |<code>table_F_termio.bc</code> |Computes Table F. Default takes ~0.75 sec. |
 |<code>table_G_termio.bc</code> |Computes Table G. Default takes ~1.90 sec. |
-|<code>table_H_termio.bc</code> |Computes Table H. Default takes ~1.302 sec. (Need debug as there are two functions doing the same thing and both are not fully correct over all inputs.) |
+|<code>table_H_termio.bc</code> |Computes Table H. Default takes ~225.79 sec. (Need debug as there are two functions doing the same thing and both are not fully correct over all inputs.) |
 |<code>table_I_termio.bc</code> |Computes Table I. Default takes ~75.40 sec.|
 |<code>table_J_termio.bc</code> |Computes Table J. Default takes ~1.20 sec. |
 |<code>table_K_termio.bc</code> |Computes Table K. Default takes ~2.78 sec. |
+|<code>table_L_termio.bc</code> |Computes Table L. Default takes ~71.99 sec. |
 |<code>table_M_termio.bc</code> |Computes Table M. Default takes ~21.60 sec. |
 
 ### Functions inside Lawden.bc

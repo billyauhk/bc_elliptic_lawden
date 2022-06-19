@@ -1,0 +1,210 @@
+# We first need to generate the values
+oscale=scale;
+
+# g3>0 (6 pages)
+# G=-6,-5,-4,-3,-2
+scale=20;
+v[1]=bigg2nu_g3gt0(-6);
+v[2]=bigg2nu_g3gt0(-5);
+v[3]=bigg2nu_g3gt0(-4);
+v[4]=bigg2nu_g3gt0(-3);
+v[5]=bigg2nu_g3gt0(-2);
+scale=8;
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+  for(col=1;col<=5;col=col+1){
+    print tablej_p(uow1,v[col])," "
+  }
+  print "\n"
+}
+print "-----\n"
+
+# G=-1.8,-1.6,-1.4,-1.2,-1.0
+scale=20;
+v[1]=bigg2nu_g3gt0(-1.8);
+v[2]=bigg2nu_g3gt0(-1.6);
+v[3]=bigg2nu_g3gt0(-1.4);
+v[4]=bigg2nu_g3gt0(-1.2);
+v[5]=bigg2nu_g3gt0(-1.0);
+scale=8;
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+  for(col=1;col<=5;col=col+1){
+    print tablej_p(uow1,v[col])," "
+  }
+  print "\n"
+}
+print "-----\n"
+
+# G=-0.8,-0.6,-0.4,-0.2,0
+scale=20;
+v[1]=bigg2nu_g3gt0(-0.8);
+v[2]=bigg2nu_g3gt0(-0.6);
+v[3]=bigg2nu_g3gt0(-0.4);
+v[4]=bigg2nu_g3gt0(-0.2);
+v[5]=bigg2nu_g3gt0(-0.0);
+scale=8;
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+  for(col=1;col<=5;col=col+1){
+    print tablej_p(uow1,v[col])," "
+  }
+  print "\n"
+}
+print "-----\n"
+
+# G=0.2,0.4,0.6,0.8,1.0
+scale=20;
+v[1]=bigg2nu_g3gt0(0.2);
+v[2]=bigg2nu_g3gt0(0.4);
+v[3]=bigg2nu_g3gt0(0.6);
+v[4]=bigg2nu_g3gt0(0.8);
+v[5]=bigg2nu_g3gt0(1.0);
+scale=8;
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+  for(col=1;col<=5;col=col+1){
+    print tablej_p(uow1,v[col])," "
+  }
+  print "\n"
+}
+print "-----\n"
+
+# G=1.2,1.4,1.6,1.8,2.0
+scale=20;
+v[1]=bigg2kappa_g3gt0(1.2);
+v[2]=bigg2kappa_g3gt0(1.4);
+v[3]=bigg2kappa_g3gt0(1.6);
+v[4]=bigg2kappa_g3gt0(1.8);
+v[5]=bigg2kappa_g3gt0(2.0);
+scale=8;
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+  for(col=1;col<=5;col=col+1){
+    print tableh_p(uow1,v[col])," "
+  }
+  print "\n"
+}
+print "-----\n"
+
+# G=3.0,4.0,5.0,6.0
+scale=20;
+v[1]=bigg2kappa_g3gt0(3.0);
+v[2]=bigg2kappa_g3gt0(4.0);
+v[3]=bigg2kappa_g3gt0(5.0);
+v[4]=bigg2kappa_g3gt0(6.0);
+scale=8;
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+  for(col=1;col<=4;col=col+1){
+    print tableh_p(uow1,v[col])," "
+  }
+  print "\n"
+}
+print "-----\n"
+
+# g3<0 (another 6 pages)
+# G=-6,-5,-4,-3,-2
+scale=20;
+v[1]=bigg2nu_g3lt0(-6);
+v[2]=bigg2nu_g3lt0(-5);
+v[3]=bigg2nu_g3lt0(-4);
+v[4]=bigg2nu_g3lt0(-3);
+v[5]=bigg2nu_g3lt0(-2);
+scale=8;
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+  for(col=1;col<=5;col=col+1){
+    print tablej_p(uow1,v[col])," "
+  }
+  print "\n"
+}
+print "-----\n"
+
+# G=-1.8,-1.6,-1.4,-1.2,-1.0
+scale=20;
+v[1]=bigg2nu_g3lt0(-1.8);
+v[2]=bigg2nu_g3lt0(-1.6);
+v[3]=bigg2nu_g3lt0(-1.4);
+v[4]=bigg2nu_g3lt0(-1.2);
+v[5]=bigg2nu_g3lt0(-1.0);
+scale=8;
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+  for(col=1;col<=5;col=col+1){
+    print tablej_p(uow1,v[col])," "
+  }
+  print "\n"
+}
+print "-----\n"
+
+# G=-0.8,-0.6,-0.4,-0.2,0
+scale=20;
+v[1]=bigg2nu_g3lt0(-0.8);
+v[2]=bigg2nu_g3lt0(-0.6);
+v[3]=bigg2nu_g3lt0(-0.4);
+v[4]=bigg2nu_g3lt0(-0.2);
+v[5]=bigg2nu_g3lt0(-0.0);
+scale=8;
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+  for(col=1;col<=5;col=col+1){
+    print tablej_p(uow1,v[col])," "
+  }
+  print "\n"
+}
+print "-----\n"
+
+# G=0.2,0.4,0.6,0.8,1.0
+scale=20;
+v[1]=bigg2nu_g3lt0(0.2);
+v[2]=bigg2nu_g3lt0(0.4);
+v[3]=bigg2nu_g3lt0(0.6);
+v[4]=bigg2nu_g3lt0(0.8);
+scale=8;
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+  for(col=1;col<=5;col=col+1){
+    if(col<5){
+      print tablej_p(uow1,v[col])," "
+    }else{
+      print "+oo"
+    }
+  }
+  print "\n"
+}
+print "-----\n"
+
+# G=1.2,1.4,1.6,1.8,2.0
+scale=20;
+v[1]=bigg2kappa_g3lt0(1.2);
+v[2]=bigg2kappa_g3lt0(1.4);
+v[3]=bigg2kappa_g3lt0(1.6);
+v[4]=bigg2kappa_g3lt0(1.8);
+v[5]=bigg2kappa_g3lt0(2.0);
+scale=8;
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+  for(col=1;col<=5;col=col+1){
+    print tableh_p(uow1,v[col])," "
+  }
+  print "\n"
+}
+print "-----\n"
+
+# G=3.0,4.0,5.0,6.0
+scale=20;
+v[1]=bigg2kappa_g3lt0(3.0);
+v[2]=bigg2kappa_g3lt0(4.0);
+v[3]=bigg2kappa_g3lt0(5.0);
+v[4]=bigg2kappa_g3lt0(6.0);
+scale=8;
+for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+  print uow1,":"
+  for(col=1;col<=4;col=col+1){
+    print tableh_p(uow1,v[col])," "
+  }
+  print "\n"
+}
+
+quit

@@ -325,7 +325,7 @@ define tableg_function(uow1,kappa){
 # Table H, I, J are Weierstrass's P function
 define tableh1_p(uow1,kappa){
 # Done with Lawden (6.7.28) but somehow not correct
-  auto pi,q,z,ans,ooscale,oscale,adddigits,flag;
+  auto pi,q,z,ans,ooscale,oscale,adddigits,flag,value;
   flag=0;
   ooscale=scale;
   scale=scale*2; # Request mmore digits for q
@@ -340,7 +340,13 @@ define tableh1_p(uow1,kappa){
     return 0;
   }
   while(flag==0){
-    adddigits=2*l(abs(theta1(z,q)))/l(10) + l(abs(theta1_dz(0,q)))/l(10) + l(abs(theta1(z,q)*theta1_dz2(z,q)-theta1_dz(z,q)^2))/l(10);
+    adddigits = 0;
+    value = 2*l(abs(theta1(z,q))); if(value>0){adddigits = adddigits + value;}
+    value = l(abs(theta1_dz(0,q))); if(value>0){adddigits = adddigits + value;}
+    value = l(abs(theta1(z,q)*theta1_dz2(z,q))); if(value>0){adddigits = adddigits + value;}
+    value = l(abs(-theta1_dz(z,q)^2)); if(value>0) adddigits = adddigits + value;
+
+    adddigits = adddigits/l(10);
     oscale=scale;
     if(adddigits<0){ # Need to add digits
       if(adddigits>-2*oscale){ # adddigits unable to correctly reflect the number of digits needed
@@ -362,7 +368,8 @@ define tableh1_p(uow1,kappa){
     }
   }
 #  print "SUB1=",theta1_dz3(0,q)/(3*theta1_dz(0,q)),"\n"
-#  print "SUB2=",(theta1(z,q)*theta1_dz2(z,q)-theta1_dz(z,q)^2)/(theta1(z,q)^2),"\n"
+#  print "SUB2=",(theta1(z,q)*theta1_dz2(z,q))/(theta1(z,q)^2),"\n"
+#  print "SUB3=",(-theta1_dz(z,q)^2)/(theta1(z,q)^2),"\n"
 #  print "(z=",z,",q=",q,")"
   ans = (pi/2)^2*(theta1_dz3(0,q)/(3*theta1_dz(0,q)) - (theta1(z,q)*theta1_dz2(z,q)-theta1_dz(z,q)^2)/(theta1(z,q)^2));
   scale = ooscale;

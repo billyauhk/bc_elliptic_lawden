@@ -1,16 +1,41 @@
+# Basically both of them are correct, but cannot get accurate precision estimates
+#print tableh1_p(uow1,kappa),"\n";
+#print tableh_p(uow1,kappa),"\n";
+# tableh1_p cannot compute values for uow1=0.00
+# tableh_p can accept that input but obviously not working (as the function goes to infinity and tablef1_p is zero)
+
+# Try to merge two results
+define tableh_p_avg(uow1,kappa){
+  auto oscale, imp1, imp2, adddigits, differ;
+  oscale=scale;
+  adddigits = 0;
+  differ = 0;
+  while(differ<oscale){
+    imp1 = tableh1_p(uow1,kappa);
+    imp2 = tableh_p(uow1,kappa);
+    differ = l(abs(imp1-imp2))/l(0.1);
+    if(differ<=oscale){
+      adddigits = adddigits + abs(oscale - differ) + 1;
+      scale = oscale + adddigits;
+    }
+  }
+  scale = oscale;
+  return (imp1+imp2)/2;
+}
+
 # Table H
 oscale=scale;
-scale=10;
+scale=10; # Numbers does not match at scale=10 but it is good to reproduce the tables-
 for(subpage=0;subpage<4;subpage=subpage+1){
-print "[PAGE ",subpage+1,"]\n"
-for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
-  print uow1,":"
-for(kappa=0.1+subpage*0.5;kappa<0.1+(subpage+1)*0.5;kappa=kappa+0.1){
-  print tableh1_p(uow1,kappa)," "
-}
-  print "\n"
-}
-print "-----\n"
+  print "[PAGE ",subpage+1,"]\n"
+  for(uow1=0.02;uow1<=1.0;uow1=uow1+0.02){
+    print uow1,":"
+    for(kappa=0.1+subpage*0.5;kappa<0.1+(subpage+1)*0.5;kappa=kappa+0.1){
+      print tableh_p_avg(uow1,kappa)," "
+    }
+    print "\n"
+  }
+  print "-----\n"
 }
 print "=====\n"
 scale=oscale;
